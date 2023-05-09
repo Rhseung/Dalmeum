@@ -27,52 +27,6 @@ declare interface ImageDB {
 	getProfileHash(): number;
 }
 
-declare class Room {
-    name: string;
-    isGroup: boolean;
-
-    constructor(room: string, isGroupChat: boolean) {
-        this.name = room;
-        this.isGroup = isGroupChat;
-    }
-}
-
-declare class Member {
-    name: string;
-    private image: ImageDB;
-
-    constructor(sender: string, imageDB: ImageDB) {
-        this.name = sender;
-        this.image = imageDB;
-    }
-
-    get hash(): number {
-        return this.image.getProfileHash();
-    }
-}
-
-declare class Interaction {
-    room: Room;
-    content: string;
-    member: Member;
-    isDual: boolean;
-    private replier: Replier;
-    packageName: string;
-
-    constructor(room: string, message: string, sender: string, isGroupChat: boolean, replier: Replier, imageDB: ImageDB, packageName: string, isMultiChat: boolean) {
-        this.room = new Room(room, isGroupChat);
-        this.content = message;
-        this.member = new Member(sender, imageDB);
-        this.isDual = isMultiChat;
-        this.replier = replier;
-        this.packageName = packageName;
-    }
-
-    send(message: string): void {
-        this.replier.reply(message);
-    }
-}
-
 declare namespace Log {
 	export function d(data: string, showToast: boolean = false): void;
 	export function debug(data: string, showToast: boolean = false): void;

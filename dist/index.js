@@ -22,17 +22,10 @@ var Member = /** @class */ (function () {
     });
     return Member;
 }());
-var Message = /** @class */ (function () {
-    function Message(message, sender, imageDB) {
-        this.content = message;
-        this.member = new Member(sender, imageDB);
-    }
-    return Message;
-}());
 var Interaction = /** @class */ (function () {
     function Interaction(room, message, sender, isGroupChat, replier, imageDB, packageName, isMultiChat) {
         this.room = new Room(room, isGroupChat);
-        this.message = message;
+        this.content = message;
         this.member = new Member(sender, imageDB);
         this.isDual = isMultiChat;
         this.replier = replier;
@@ -44,15 +37,20 @@ var Interaction = /** @class */ (function () {
     return Interaction;
 }());
 function onMessage(intr) {
-    if (!intr.isDual)
+    if (!(intr.isDual && intr.room.name == '닮음 공작소'))
         return;
-    if (intr.message.startsWith('do ')) {
-        var data = intr.message.substring(3);
+    intr.send(JSON.stringify(intr, null, 4));
+    if (intr.content.startsWith('do ')) {
+        var data = intr.content.substring(3);
         try {
             intr.send(eval(data));
         }
         catch (e) {
             intr.send(e.toString());
         }
+    }
+    else if (intr.content.startsWith('add ')) {
+        var args = intr.content.substring(4).split(' ').map(Number);
+        intr.send("".concat(args.reduce(function (a, b) { return a + b; }, 0)));
     }
 }
