@@ -39,18 +39,10 @@ var Interaction = /** @class */ (function () {
 function onMessage(intr) {
     if (!(intr.isDual && intr.room.name == '닮음 공작소'))
         return;
-    intr.send(JSON.stringify(intr, null, 4));
-    if (intr.content.startsWith('do ')) {
-        var data = intr.content.substring(3);
-        try {
-            intr.send(eval(data));
-        }
-        catch (e) {
-            intr.send(e.toString());
-        }
-    }
-    else if (intr.content.startsWith('add ')) {
-        var args = intr.content.substring(4).split(' ').map(Number);
-        intr.send("".concat(args.reduce(function (a, b) { return a + b; }, 0)));
-    }
+    var args = intr.content.split(' ');
+    var _a = [3, '4', 4], a = _a[0], b = _a[1], c = _a[2];
+    intr.send(f(a, b, c));
+}
+function f(a, b, c) {
+    return "".concat(a, " ").concat(b, " ").concat(c);
 }

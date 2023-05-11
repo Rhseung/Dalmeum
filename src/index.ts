@@ -51,19 +51,6 @@ class Interaction {
 function onMessage(intr: Interaction): void {
     if (!(intr.isDual && intr.room.name == '닮음 공작소')) return;
 
-    intr.send(JSON.stringify(intr, null, 4));
-
-    if (intr.content.startsWith('do ')) {
-        let data = intr.content.substring(3);
-
-        try {
-            intr.send(eval(data));
-        } catch (e) {
-            intr.send(e.toString());
-        }
-    } else if (intr.content.startsWith('add ')) {
-        let args: number[] = intr.content.substring(4).split(' ').map(Number);
-
-        intr.send(`${args.reduce((a, b) => a + b, 0)}`);
-    }
+    let args = intr.content.split(' ');
+    intr.send('hello world');
 }
