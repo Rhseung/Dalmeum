@@ -48,9 +48,12 @@ class Interaction {
     }
 }
 
+
 function onMessage(intr: Interaction): void {
     if (!(intr.isDual && intr.room.name == '닮음 공작소')) return;
 
     let args = intr.content.split(' ');
     intr.send('hello world');
 }
+
+// make decorator for function
