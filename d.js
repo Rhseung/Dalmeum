@@ -4,6 +4,102 @@
  * - https://nolbo.github.io/pidoc/kbot/
  */
 
+class Image {
+    constructor(base64, bitmap) {
+        this.base64 = base64;
+        this.bitmap = bitmap;
+    }
+
+    getBase64() {
+        return this.base64;
+    }
+
+    getBitmap() {
+        return this.bitmap;
+    }
+}
+
+class Room {
+    /**
+     * @param {string} name
+     * @param {number} chatId
+     * @param {boolean} isGroupChat
+     * @param {boolean} isOpenChat
+     * @param {Image} icon
+     */
+    constructor(name, chatId, isGroupChat, isOpenChat, icon) {
+        this.name = name;
+        this.chatId = chatId;
+        this.isGroupChat = isGroupChat;
+        this.isOpenChat = isOpenChat;
+        this.icon = icon;
+    }
+}
+
+class Author {
+    /**
+     * @param {string} name
+     * @param {string} hash
+     * @param {Image} avatar
+     */
+    constructor(name, hash, avatar) {
+        this.name = name;
+        this.hash = hash;
+        this.avatar = avatar
+    }
+}
+
+export class Message {
+    /**
+     * @param {string} content
+     * @param {Room} room
+     * @param {Author} author
+     * @param {Image} image
+     * @param {boolean} hasMention
+     * @param {number} chatLogId
+     * @param {string} packageName
+     * @param {object} args
+     * @param {string} command
+     */
+    constructor(
+        content,
+        room,
+        author,
+        image,
+        hasMention,
+        chatLogId,
+        packageName,
+        args,
+        command
+    ) {
+        this.content = content;
+        this.room = room;
+        this.author = author;
+        this.image = image;
+        this.hasMention = hasMention;
+        this.isMention = hasMention;
+        this.chatLogId = chatLogId;
+        this.packageName = packageName;
+        this.args = args;
+        this.command = command;
+    }
+
+    /**
+     * 채팅이 수신된 채팅방으로 응답 전송
+     * @param {string} text
+     * @return {void}
+     */
+    reply(text) {
+    }
+
+    /**
+     * 채팅이 수신된 채팅방에 별도의 채팅을 보내지 않고 읽음으로 처리
+     * @return {void}
+     */
+    markAsRead() {
+    }
+}
+
 export class App {
     constructor() {
     }
@@ -23,7 +119,7 @@ export class App {
      */
     static runOnUiThread(task, onComplete) {
     }
-};
+}
 
 export class AppData {
     constructor() {
@@ -103,7 +199,7 @@ export class AppData {
      */
     static clear() {
     }
-};
+}
 
 export class Bot {
     constructor() {
@@ -180,6 +276,23 @@ export class Bot {
      * @return {void}
      */
     on(eventName, listener) {
+        switch (eventName) {
+            case Event.MESSAGE:
+            case Event.COMMAND:
+                listener(new Message());
+                break;
+            case Event.MEMBER_COUNT_CHANGED:
+                listener({
+                    room: new Room(),
+                    count: {
+                        before: 0,
+                        after: 1
+                    }
+                });
+                break;
+            default:
+                listener();
+        }
     }
 
     /**
@@ -540,10 +653,7 @@ export class Device {
     }
 }
 
-export class Event {
-    constructor() {
-    }
-
+export const Event = {
     /**
      * 채팅이 수신되면 발생하는 이벤트에요.
      * ```
@@ -580,31 +690,31 @@ export class Event {
      * }
      * ```
      */
-    static MESSAGE = 'message'
+    MESSAGE: 'message',
 
     /**
      * `Bot#setCommandPrefix(String prefix);`으로 설정한 문자열로 시작하는 채팅이 수신되면 발생하는 이벤트에요.
      * ```
      * (chat) => {
      *   chat - 수신된 채팅의 정보가 담겨있는 객체. Event.MESSAGE의 매개변수에 다음 필드 두 개가 추가됨
-     *   chat.commander - 수신된 채팅 내용을 띄어쓰기로 나눈 결과물 중 가장 앞에 있는 값에서 prefix를 제외한 부분
+     *   chat.command - 수신된 채팅 내용을 띄어쓰기로 나눈 결과물 중 가장 앞에 있는 값에서 prefix를 제외한 부분
      *   chat.args - 수신된 채팅 내용을 띄어쓰기로 나눈 결과물 중 가장 앞에 있는 어절을 제외한 배열
      * }
      * ```
      */
-    static COMMAND = 'command'
+    COMMAND: 'command',
 
     /**
      * 봇 컴파일이 시작되면 발생하는 이벤트에요.
      * 매개변수는 없어요
      */
-    static START_COMPILE = 'startCompile'
+    START_COMPILE: 'startCompile',
 
     /**
      * 매 틱(1초)마다 발생하는 이벤트에요.
      * 매개변수는 없어요
      */
-    static TICK = 'tick'
+    TICK: 'tick',
 
     /**
      * 상단바에 알림이 뜨면 발생하는 이벤트에요.
@@ -617,7 +727,7 @@ export class Event {
      * }
      * ```
      */
-    static NOTIFICATION_POSTED = 'notificationPosted'
+    NOTIFICATION_POSTED: 'notificationPosted',
 
     /**
      * 상단바에 뜬 알림이 사라지면 발생하는 이벤트에요.
@@ -629,7 +739,7 @@ export class Event {
      * }
      * ```
      */
-    static NOTIFICATION_REMOVED = 'notificationRemoved'
+    NOTIFICATION_REMOVED: 'notificationRemoved',
 
     /**
      * 배터리 잔량이 바뀐게 감지되면 발생하는 이벤트에요
@@ -643,7 +753,7 @@ export class Event {
      * }
      * ```
      */
-    static BATTERY_LEVEL_CHANGED = 'batteryLevelChanged'
+    BATTERY_LEVEL_CHANGED: 'batteryLevelChanged',
 
     /**
      * 오픈채팅방 입퇴장 API 사용시 방 인원수가 변하면 발생하는 이벤트에요.
@@ -658,9 +768,9 @@ export class Event {
      * }
      * ```
      */
-    static MEMBER_COUNT_CHANGED = 'memberCountChanged'
+    MEMBER_COUNT_CHANGED: 'memberCountChanged',
 
-    static Activity = class {
+    Activity: class {
         // todo: Activity
     }
 }

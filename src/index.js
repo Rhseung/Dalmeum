@@ -1,22 +1,11 @@
-const { BotManager, Event } = require('d.js');
+const { Message, BotManager, Event } = require('d.js');
+const { CommandMap } = require('modules/commander');
 
 const bot = BotManager.getCurrentBot();
-bot.setCommandPrefix('@');
+const cmdMap = new CommandMap('/');
 
-bot.on(Event.COMMAND, (msg) => {
-   msg.reply('hello world');
+bot.on(Event.MESSAGE, msg => {
+    cmdMap.build(msg);
+
+
 });
-
-async function main() {
-    return await new Promise(31);
-}
-
-const commands = {
-   add: (...numbers) => {
-      return numbers.reduce((a, b) => a + b);
-   },
-
-   translate(text, source='ko', target='en') {
-      return `translate ${text} from ${source} to ${target}`;
-   }
-}
