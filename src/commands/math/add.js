@@ -1,4 +1,4 @@
-const { Argument, Command } = require('../../modules/commander');
+const { Argument, TypedCommand } = require('../../modules/commander');
 
 module.exports = Command(
     aliases = ['덧셈'],

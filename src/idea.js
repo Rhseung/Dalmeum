@@ -40,7 +40,7 @@
 //     }
 // }}
 //
-// class Command {
+// class TypedCommand {
 //     constructor(desc, execute) {
 //         this.desc = desc;
 //         this.execute = execute;
@@ -49,7 +49,7 @@
 //
 // function command(description) {
 //     return function (execute) {
-//         return new Command(description, execute);
+//         return new TypedCommand(description, execute);
 //     }
 // }
 //
@@ -155,20 +155,20 @@ idea5 = (dalmeum) => {
 //  *
 //  *
 //  */
-// ping = new Command(cmd => cmd
+// ping = new TypedCommand(cmd => cmd
 //     .setDescription('ping 명령어')
 //     .run(msg => {
 //         msg.reply('pong');
 //     })
 // )
 //
-// translate = new Command('translate')
+// translate = new TypedCommand('translate')
 //     .setDescription('번역 명령어')
-//     .addArgument(String, source => new Command('source')
+//     .addArgument(String, source => new TypedCommand('source')
 //         .setDescription('번역할 언어')
-//         .addArgument(String, target => new Command('target')
+//         .addArgument(String, target => new TypedCommand('target')
 //             .setDescription('번역될 언어')
-//             .addArgument(String, text => new Command('text')
+//             .addArgument(String, text => new TypedCommand('text')
 //                 .setDescription('번역할 문장')
 //                 .run(`translate ${source} ${target} ${text}`)
 //             )

@@ -28,14 +28,14 @@ class FormatString {
     }
 }
 
-class CommandBranch {
+class TypedCommand {
     constructor(type, execute) {
         if (!isString(type) && !isConstructor(type)) {
-            throw new Error('CommandBranch must have a type constructor or a formatted string.');
+            throw new Error('TypedCommand must have a type constructor or a formatted string.');
         }
         
         if (isFunction(type) && type.length !== 1) {
-            throw new Error('CommandBranch must have a type constructor with one argument.');
+            throw new Error('TypedCommand must have a type constructor with one argument.');
         }
         
         if (isString(type)) {
@@ -61,15 +61,15 @@ class CommandBranch {
                 if (is(casted, this.type)) {
                     let runResult = this.execute(msg);
                     if (isArray(runResult)) {
-                        return new CommandBranches(runResult).execute(msg);
+                        return new CommandBranch(runResult).execute(msg);
                     } else {
                         return runResult;
                     }
                 } else {
-                    throw new Error('CommandBranch type mismatch. Expected ' + this.type.name + ', but got ' + typename(casted) + '.');
+                    throw new Error('TypedCommand type mismatch. Expected ' + this.type.name + ', but got ' + typename(casted) + '.');
                 }
             } catch (err) {
-                throw new Error('CommandBranch type cast error.');
+                throw new Error('TypedCommand type cast error.');
             }
         } else {    // FormatString
             if (this.execute.length !== this.type.args.length) {
@@ -83,7 +83,7 @@ class CommandBranch {
             
             let runResult = this.execute.apply(null, match);
             if (isArray(runResult)) {
-                return new CommandBranches(runResult).execute(msg);
+                return new CommandBranch(runResult).execute(msg);
             } else {
                 return runResult;
             }
@@ -99,20 +99,20 @@ class DefaultCommand {
     execute(msg) {
         let runResult = this.execute(msg);
         if (isArray(runResult)) {
-            return new CommandBranches(runResult).execute(msg);
+            return new CommandBranch(runResult).execute(msg);
         } else {
             return runResult;
         }
     }
 }
 
-class CommandBranches {
+class CommandBranch {
     /**
      * @param {Array} branch
      */
     constructor(branch) {
         if (!Array.isArray(branch)) {
-            throw new Error('CommandBranch must have an array of arguments.');
+            throw new Error('CommandBranch must have an array.');
         }
         
         this.default = null;
@@ -122,7 +122,7 @@ class CommandBranches {
         
         this.branches = [];
         for (let i = 0; i < branch.length; i += 2) {
-            this.branches.push(new CommandBranch(branch[i], branch[i + 1]));
+            this.branches.push(new TypedCommand(branch[i], branch[i + 1]));
         }
     }
     
@@ -146,7 +146,7 @@ class CommandBranches {
     }
 }
 
-const x = new CommandBranches([
+const x = new CommandBranch([
     Number, (첫_번째_수) => [],
     String, (임의_문자열) => [],
     "<number>월 <number>일", (월, 일) => [],
